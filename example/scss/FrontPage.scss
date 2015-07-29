@@ -1,0 +1,12 @@
+@import "./base";
+@import "./mixin";
+
+.FrontPage {
+  p {
+    color: blue;
+  }
+}
+
+div {
+  @include hard-reset;
+}
