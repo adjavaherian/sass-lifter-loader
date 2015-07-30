@@ -26,6 +26,11 @@ function apply(options, compiler) {
     var testString = options.testString || 'scss';
     var re = new RegExp('' + testString + '', 'g');
 
+    //compiler.parser.plugin("var rewire", function (expr) {
+    //    console.log('parser expr', expr);
+    //    return true;
+    //});
+
     compiler.plugin("compilation", function(compilation, params) {
 
         compilation.plugin("optimize-chunks", function (chunks) {
@@ -55,7 +60,8 @@ function apply(options, compiler) {
                     cssOutput[moduleRequest].push(result.css.toString());
                 }
 
-                console.log('cssOutput', cssOutput);
+                this.mainStyle = cssOutput;
+                //console.log('cssOutput', cssOutput);
 
             });
         });

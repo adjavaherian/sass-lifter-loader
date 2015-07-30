@@ -3,6 +3,8 @@ var path = require('path');
 var fs = require('fs');
 var loaderUtils = require("loader-utils");
 var SassLifterPlugin = require('./lift-sass-plugin');
+var Promise = require('promise');
+
 
 var myWebpackConfig = {
     name: 'lift sass webpack',
@@ -38,14 +40,24 @@ var myWebpackConfig = {
 
 module.exports = function(source) {
 
+    var callback = this.async();
+
     console.log('\nlift-sass loader applying to', this.resourcePath);
+
     myWebpackConfig.entry = {
         'lift-sass-loader-entry': this.resourcePath
     };
 
-    webpack(myWebpackConfig, function(err, stats) {
+    webpack(myWebpackConfig, function (err, stats) {
         if (err) throw err;
+        callback(null, ['var style = '+JSON.stringify(this.mainStyle)+';', source].join("\n"));
     });
 
-    return source
 };
+
+//module.exports.pitch = function(remainingRequest) {
+//    console.log('remaining', remainingRequest);
+//    return [
+//        'module.exports = "";'
+//    ].join("\n");
+//};

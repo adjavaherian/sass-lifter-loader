@@ -14,6 +14,7 @@
     "loader-utils": "^0.2.11",
     "lodash": "^3.10.0",
     "node-sass": "^3.2.0",
+    "promise": "^7.0.3",
     "raw-loader": "^0.5.1",
     "react": "^0.13.3",
     "react-router": "^0.13.3",
