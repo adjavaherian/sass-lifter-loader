@@ -11,8 +11,8 @@ var myWebpackConfig = {
     target: 'node',
     output: {
         libraryTarget: 'commonjs2',
-        path: __dirname,
-        filename: 'lift-sass-output.js'
+        path: path.join('/dev'),
+        filename: 'null'
     },
     resolve: {
         root: __dirname,
