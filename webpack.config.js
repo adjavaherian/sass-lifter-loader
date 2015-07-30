@@ -23,7 +23,7 @@ module.exports = {
     resolveLoader: {
         root: __dirname,
         alias: {
-            'collect-sass': path.join(__dirname, './lift-sass-loader')
+            'lift-sass': path.join(__dirname, './lift-sass-loader')
         }
     },
     module: {
