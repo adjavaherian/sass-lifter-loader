@@ -3,8 +3,6 @@ var path = require('path');
 var fs = require('fs');
 var loaderUtils = require("loader-utils");
 var SassLifterPlugin = require('./lift-sass-plugin');
-var Promise = require('promise');
-
 
 var myWebpackConfig = {
     name: 'lift sass webpack',
@@ -27,11 +25,23 @@ var myWebpackConfig = {
     ],
     module: {
         loaders: [
-            { test: /\.scss$/,  loader: 'raw!sass'}
-            , {
-                test: /\.jsx$/,
-                loaders: ['babel']
-            }]
+                {
+                    test: /\.scss$/,
+                    loader: 'raw!sass'
+                }
+                , {
+                    test: /\.(jpe?g|png|gif|svg)$/i,
+                    loader: 'null-loader'
+                }
+                , {
+                    test: /\.json$/,
+                    loaders: ['json-loader']
+                }
+                , {
+                    test: /\.jsx$/,
+                    loaders: ['babel']
+                }
+            ]
     },
     bail: true,
     cache: false,
