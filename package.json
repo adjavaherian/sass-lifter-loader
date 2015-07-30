@@ -1,5 +1,5 @@
 {
-  "name": "webpack-lifter-loader",
+  "name": "sass-lifter-loader",
   "version": "1.0.0",
   "description": "webpack loader for lifting sass as css into entry",
   "main": "index.js",
