@@ -14,7 +14,6 @@
     "file-loader": "^0.8.4",
     "gulp": "^3.9.0",
     "image-webpack-loader": "^1.6.1",
-    "imagemin": "^3.2.0",
     "json-loader": "^0.5.2",
     "loader-utils": "^0.2.11",
     "lodash": "^3.10.0",
