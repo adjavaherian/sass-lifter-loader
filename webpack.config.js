@@ -47,7 +47,6 @@ module.exports = {
         , {
             test: /\.(jpe?g|png|gif|svg)$/i,
             loaders: [
-                //'noop-loader',
                 'passthru-loader'
             ]
         }

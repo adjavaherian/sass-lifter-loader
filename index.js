@@ -29,7 +29,8 @@ var myWebpackConfig = {
         root: __dirname,
         alias: {
             'lift-sass': path.join(__dirname),
-            'logger-loader': path.join(__dirname, 'logger-loader')
+            //'logger-loader': path.join(__dirname, 'logger-loader'),
+            'passthru-loader': path.join(__dirname, 'passthru-loader')
         }
     },
     module: {
@@ -39,15 +40,14 @@ var myWebpackConfig = {
                     loaders: [
                         'raw',
                         //'css',
-                        'logger-loader',
+                        //'logger-loader',
                         'sass'
                     ]
                 }
                 , {
                     test: /\.(jpe?g|png|gif|svg)$/i,
                     loaders: [
-                        'logger-loader',
-                        'url-loader?limit=100000'
+                        'passthru-loader'
                     ]
                 }
                 , {
