@@ -2,6 +2,7 @@
 var webpack = require('webpack');
 var path = require('path');
 var fs = require('fs');
+var ProgressPlugin = require('./progress-plugin');
 
 module.exports = {
     name: 'server side webpack',
@@ -11,7 +12,7 @@ module.exports = {
     },
     output: {
         libraryTarget: 'commonjs2',
-        path: 'example/',
+        path: path.join(__dirname, 'example', 'dist'),
         filename: 'webpack.output.js'
     },
     resolve: {
@@ -23,18 +24,40 @@ module.exports = {
     resolveLoader: {
         root: __dirname,
         alias: {
-            'lift-sass': path.join(__dirname, './lift-sass-loader')
+            'lift-sass': path.join(__dirname),
+            'logger-loader': path.join(__dirname, 'logger-loader'),
+            'noop-loader': path.join(__dirname, 'noop-loader'),
+            'passthru-loader': path.join(__dirname, 'passthru-loader')
         }
     },
+    plugins: [
+        new ProgressPlugin()
+    ],
     module: {
         loaders: [
-        { test: /\.scss$/,  loader: 'raw!sass'}
+        {
+            test: /\.scss$/,
+            loaders: [
+                'raw',
+                //'style',
+                //'css',
+                'sass'
+            ]
+        }
+        , {
+            test: /\.(jpe?g|png|gif|svg)$/i,
+            loaders: [
+                //'noop-loader',
+                'passthru-loader'
+            ]
+        }
         , {
             test: /\.jsx$/,
             loaders: ['babel']
         }]
     },
     bail: true,
-    cache: false,
+    cache: true,
+    watch: true,
     debug: true
 };

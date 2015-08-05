@@ -5,10 +5,11 @@
 var _ = require('lodash');
 var path = require('path');
 var sass = require('node-sass');
+var gutil = require('gulp-util');
 
 //storage for recursive dependencies and output
 var visited = {};
-var cssOutput = {};
+var cssOutput = [];
 
 function getNodes(root)  {
     if (root.dependencies) {
@@ -36,11 +37,11 @@ function apply(options, compiler) {
         compilation.plugin("optimize-chunks", function (chunks) {
 
             chunks.forEach(function(chunk) {
-                console.log('\nentry chunk name', chunk.name);
+                gutil.log('lift-sass-plugin entry chunk name', chunk.name);
 
                 var module = chunk.modules[0];
                 var moduleRequest =  module.resource;
-                console.log('lift-sass-plugin working on module', module.resource);
+                gutil.log('lift-sass-plugin working on module', module.resource);
                 getNodes(module);
 
                 //get paths for match
@@ -51,13 +52,12 @@ function apply(options, compiler) {
                         foundPaths.push(key);
                     }
                 });
-                cssOutput[moduleRequest] = [];
 
                 for (var i = 0; i < foundPaths.length; i++) {
                     var result = sass.renderSync({
                         file: foundPaths[i]
                     });
-                    cssOutput[moduleRequest].push(result.css.toString());
+                    cssOutput.push(result.css.toString());
                 }
 
                 this.mainStyle = cssOutput;

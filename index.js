@@ -3,14 +3,16 @@ var path = require('path');
 var fs = require('fs');
 var loaderUtils = require("loader-utils");
 var SassLifterPlugin = require('./lift-sass-plugin');
+var ExtractTextPlugin = require("extract-text-webpack-plugin");
+var gutil = require('gulp-util');
 
 var myWebpackConfig = {
     name: 'lift sass webpack',
     target: 'node',
     output: {
         libraryTarget: 'commonjs2',
-        path: path.join('/dev'),
-        filename: 'null'
+        path: path.join(__dirname, 'example', 'dist'),
+        filename: 'sass-lifter-loader-output'
     },
     resolve: {
         root: __dirname,
@@ -23,15 +25,30 @@ var myWebpackConfig = {
             testString: 'scss'
         })
     ],
+    resolveLoader: {
+        root: __dirname,
+        alias: {
+            'lift-sass': path.join(__dirname),
+            'logger-loader': path.join(__dirname, 'logger-loader')
+        }
+    },
     module: {
         loaders: [
                 {
                     test: /\.scss$/,
-                    loader: 'raw!sass'
+                    loaders: [
+                        'raw',
+                        //'css',
+                        'logger-loader',
+                        'sass'
+                    ]
                 }
                 , {
                     test: /\.(jpe?g|png|gif|svg)$/i,
-                    loader: 'null-loader'
+                    loaders: [
+                        'logger-loader',
+                        'url-loader?limit=100000'
+                    ]
                 }
                 , {
                     test: /\.json$/,
@@ -44,15 +61,17 @@ var myWebpackConfig = {
             ]
     },
     bail: true,
-    cache: false,
+    cache: true,
     debug: true
 };
 
 module.exports = function(source) {
 
+    if(this.cacheable) this.cacheable();
+
     var callback = this.async();
 
-    console.log('\nlift-sass loader applying to', this.resourcePath);
+    gutil.log('lift-sass loader applying to', this.resourcePath);
 
     myWebpackConfig.entry = {
         'lift-sass-loader-entry': this.resourcePath
