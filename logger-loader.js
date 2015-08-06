@@ -6,7 +6,6 @@ var SassLifterPlugin = require('./lift-sass-plugin');
 var ExtractTextPlugin = require("extract-text-webpack-plugin");
 var gutil = require('gulp-util');
 var gulp = require('gulp');
-var manifest = require('./example/dist/rev-manifest');
 
 var re = new RegExp('[\\w.\\/\\-]*(png|gif|jpg|jpeg|svg)', 'gi');
 
