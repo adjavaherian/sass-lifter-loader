@@ -27,7 +27,7 @@ function replaceImages(source, options) {
 
     var manifest = require(options.manifest);
     var urlRE = new RegExp('[\\w.\\/\\-]*(png|gif|jpg|jpeg|svg)', 'gi');
-    var urls = source.match(urlRE);
+    var urls = source.match(urlRE) || [];
 
     urls.map(function(url){
         var fileRE = new RegExp(url);
