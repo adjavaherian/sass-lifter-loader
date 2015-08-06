@@ -24,7 +24,7 @@ module.exports = {
     resolveLoader: {
         root: __dirname,
         alias: {
-            'lift-sass': path.join(__dirname),
+            'lift-sass': path.join(__dirname) + '?testString=scss&prefix=images&manifest=' + path.join(__dirname, 'example', 'dist', 'rev-manifest'),
             'logger-loader': path.join(__dirname, 'logger-loader'),
             'noop-loader': path.join(__dirname, 'noop-loader'),
             'passthru-loader': path.join(__dirname, 'passthru-loader')

@@ -20,13 +20,7 @@ var myWebpackConfig = {
         modulesDirectories: ['node_modules'],
         extensions: ['', '.json', '.js', '.jsx', '.scss', '.png', '.jpg', '.jpeg', '.gif']
     },
-    plugins: [
-        new SassLifterPlugin({
-            testString: 'scss',
-            manifest: path.join(__dirname, 'example', 'dist', 'rev-manifest'),
-            prefix: 'images'
-        })
-    ],
+    plugins: [],
     resolveLoader: {
         root: __dirname,
         alias: {
@@ -69,6 +63,8 @@ var myWebpackConfig = {
 
 module.exports = function(source) {
 
+    var query = loaderUtils.parseQuery(this.query);
+
     if(this.cacheable) this.cacheable();
 
     var callback = this.async();
@@ -78,6 +74,10 @@ module.exports = function(source) {
     myWebpackConfig.entry = {
         'lift-sass-loader-entry': this.resourcePath
     };
+
+    myWebpackConfig.plugins.push(
+        new SassLifterPlugin(query)
+    );
 
     webpack(myWebpackConfig, function (err, stats) {
         if (err) throw err;
