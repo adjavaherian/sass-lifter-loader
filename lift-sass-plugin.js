@@ -6,6 +6,7 @@ var _ = require('lodash');
 var path = require('path');
 var sass = require('node-sass');
 var gutil = require('gulp-util');
+var manifest = require('./example/dist/rev-manifest');
 
 //storage for recursive dependencies and output
 var visited = {};
@@ -20,6 +21,21 @@ function getNodes(root)  {
             }
         });
     }
+}
+
+function replaceImages(source, options) {
+
+    var manifest = require(options.manifest);
+    var urlRE = new RegExp('[\\w.\\/\\-]*(png|gif|jpg|jpeg|svg)', 'gi');
+    var urls = source.match(urlRE);
+
+    urls.map(function(url){
+        var fileRE = new RegExp(url);
+        var prefix = options.prefix || '';
+        source = source.replace(fileRE, path.join(prefix, manifest[url]));
+        console.log(source);
+    });
+    return source;
 }
 
 function apply(options, compiler) {
@@ -57,11 +73,15 @@ function apply(options, compiler) {
                     var result = sass.renderSync({
                         file: foundPaths[i]
                     });
-                    cssOutput.push(result.css.toString());
+                    if (options.manifest && require.resolve(options.manifest)) {
+                        cssOutput.push(replaceImages(result.css.toString(), options));
+                    } else {
+                        cssOutput.push(result.css.toString());
+                    }
+
                 }
 
                 this.mainStyle = cssOutput;
-                //console.log('cssOutput', cssOutput);
 
             });
         });

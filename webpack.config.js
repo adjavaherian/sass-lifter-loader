@@ -41,6 +41,7 @@ module.exports = {
                 'raw',
                 //'style',
                 //'css',
+                //'logger-loader',
                 'sass'
             ]
         }
@@ -57,6 +58,6 @@ module.exports = {
     },
     bail: true,
     cache: true,
-    watch: true,
+    watch: false,
     debug: true
 };

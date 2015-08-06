@@ -22,7 +22,9 @@ var myWebpackConfig = {
     },
     plugins: [
         new SassLifterPlugin({
-            testString: 'scss'
+            testString: 'scss',
+            manifest: path.join(__dirname, 'example', 'dist', 'rev-manifest'),
+            prefix: 'images'
         })
     ],
     resolveLoader: {

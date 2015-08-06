@@ -6,6 +6,7 @@ var SassLifterPlugin = require('./lift-sass-plugin');
 var ExtractTextPlugin = require("extract-text-webpack-plugin");
 var gutil = require('gulp-util');
 var gulp = require('gulp');
+var manifest = require('./example/dist/rev-manifest');
 
 var re = new RegExp('[\\w.\\/\\-]*(png|gif|jpg|jpeg|svg)', 'gi');
 
@@ -18,7 +19,10 @@ module.exports = function(source) {
     var urls = source.match(re);
 
     urls.map(function(url){
-       console.log('url', url);
+        var urlRe = new RegExp(url);
+        console.log('url', urlRe, url, manifest[url]);
+        source = source.replace(urlRe, manifest[url]);
+        console.log(source);
     });
 
     gutil.log('logger loader applying to', this.resourcePath, urls);
