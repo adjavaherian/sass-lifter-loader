@@ -6,7 +6,7 @@ var _ = require('lodash');
 var path = require('path');
 var sass = require('node-sass');
 var gutil = require('gulp-util');
-var manifest = require('./example/dist/rev-manifest');
+//var manifest = require('./example/dist/rev-manifest');
 
 //storage for recursive dependencies and output
 var visited = {};

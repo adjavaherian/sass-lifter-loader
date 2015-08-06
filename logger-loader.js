@@ -17,12 +17,12 @@ module.exports = function(source) {
 
     var urls = source.match(re);
 
-    urls.map(function(url){
-        var urlRe = new RegExp(url);
-        console.log('url', urlRe, url, manifest[url]);
-        source = source.replace(urlRe, manifest[url]);
-        console.log(source);
-    });
+    //urls.map(function(url){
+    //    var urlRe = new RegExp(url);
+    //    console.log('url', urlRe, url, manifest[url]);
+    //    source = source.replace(urlRe, manifest[url]);
+    //    console.log(source);
+    //});
 
     gutil.log('logger loader applying to', this.resourcePath, urls);
 
