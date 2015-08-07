@@ -42,14 +42,14 @@ function apply(options, compiler) {
 
     var testString = options.testString || 'scss';
     var re = new RegExp('' + testString + '', 'g');
-
-    //compiler.parser.plugin("var rewire", function (expr) {
-    //    console.log('parser expr', expr);
-    //    return true;
-    //});
+    var counter = 0;
 
     compiler.plugin("compilation", function(compilation, params) {
-        var counter = 0;
+
+        compilation.plugin("after-optimize-modules", function (chunks) {
+            gutil.log('logging this', counter);
+            counter++;
+        });
         compilation.plugin("optimize-chunks", function (chunks) {
             console.log('optimize chunks');
             chunks.forEach(function(chunk) {
@@ -65,30 +65,30 @@ function apply(options, compiler) {
                 this.mainStyle = [];
 
                 counter++;
-                //getNodes(module);
-                //
-                ////get paths for match
-                //var foundPaths = [];
-                //_.mapKeys(visited, function(value, key) {
-                //    if (re.test(key.toString())) {
-                //        //console.log('scss', key);
-                //        foundPaths.push(key);
-                //    }
-                //});
-                //
-                //for (var i = 0; i < foundPaths.length; i++) {
-                //    var result = sass.renderSync({
-                //        file: foundPaths[i]
-                //    });
-                //    if (options.manifest && require.resolve(options.manifest)) {
-                //        cssOutput.push(replaceImages(result.css.toString(), options));
-                //    } else {
-                //        cssOutput.push(result.css.toString());
-                //    }
-                //
-                //}
-                //
-                //this.mainStyle = cssOutput;
+                getNodes(module);
+
+                //get paths for match
+                var foundPaths = [];
+                _.mapKeys(visited, function(value, key) {
+                    if (re.test(key.toString())) {
+                        //console.log('scss', key);
+                        foundPaths.push(key);
+                    }
+                });
+
+                for (var i = 0; i < foundPaths.length; i++) {
+                    var result = sass.renderSync({
+                        file: foundPaths[i]
+                    });
+                    if (options.manifest && require.resolve(options.manifest)) {
+                        cssOutput.push(replaceImages(result.css.toString(), options));
+                    } else {
+                        cssOutput.push(result.css.toString());
+                    }
+
+                }
+
+                this.mainStyle = cssOutput;
 
             });
         });

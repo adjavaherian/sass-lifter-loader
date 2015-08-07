@@ -3,6 +3,7 @@ var webpack = require('webpack');
 var path = require('path');
 var fs = require('fs');
 var ProgressPlugin = require('./progress-plugin');
+var myCache = {};
 
 module.exports = {
     name: 'server side webpack',
@@ -57,7 +58,7 @@ module.exports = {
         }]
     },
     bail: true,
-    cache: true,
+    cache: myCache,
     watch: false,
     debug: true
 };

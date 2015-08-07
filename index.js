@@ -6,8 +6,8 @@ var SassLifterPlugin = require('./lift-sass-plugin');
 var ExtractTextPlugin = require("extract-text-webpack-plugin");
 var gutil = require('gulp-util');
 var _ = require('lodash');
-
-var cacheObj = {};
+var find = require("search-requires");
+var sass = require('node-sass');
 
 var myWebpackConfig = {
     name: 'lift sass webpack',
@@ -60,33 +60,139 @@ var myWebpackConfig = {
             ]
     },
     bail: true,
-    cache: cacheObj,
+    cache: true,
     debug: true
 };
 
 module.exports = function(source) {
 
-    var query = loaderUtils.parseQuery(this.query);
-
     if(this.cacheable) this.cacheable();
 
+    var query = loaderUtils.parseQuery(this.query);
+    var testString = query.testString || 'scss';
+    var re = new RegExp('' + testString + '', 'g');
     var callback = this.async();
     var self = this;
+    var fileName = this.resourcePath.split('/').splice(-1)[0];
 
-    gutil.log('lift-sass loader applying to', this.resourcePath);
+    gutil.log('lift-sass loader applying to', fileName);
 
     myWebpackConfig.entry = {
         'lift-sass-loader-entry': this.resourcePath
     };
 
-    myWebpackConfig.plugins.push(
-        new SassLifterPlugin(query)
-    );
     webpack(myWebpackConfig, function (err, stats) {
-        //console.log('web.........', stats.compilation._modules);
+
         if (err) throw err;
-        callback(null, ['var style = '+JSON.stringify(this.mainStyle)+';', source].join("\n"));
+
+        var cache = [];
+        var data = JSON.stringify(stats, function(key, value) {
+            if (typeof value === 'object' && value !== null) {
+                if (cache.indexOf(value) !== -1) {
+                    // Circular reference found, discard key
+                    return;
+                }
+                // Store value in our collection
+                cache.push(value);
+            }
+            return value;
+        });
+        cache = null;
+
+
+        stats.compilation.entries.map(function(entry) {
+
+            var deps = entry.dependencies;
+            //storage for recursive dependencies and output
+            var visited = {};
+            var cssOutput = [];
+
+            function getNodes(root)  {
+                console.log('getNodes', root.userRequest);
+                if (root.dependencies.length > 0) {
+                    console.log('has deps');
+                    root.dependencies.forEach(function (child) {
+                        console.log('get child nodes');
+                        if ( child.module && child.module.userRequest && !visited[child.module.userRequest]) {
+                            visited[child.module.userRequest] = true;
+                            getNodes(child.module);
+                        }
+                    });
+                } else {
+                    console.log('no deps', root.userRequest);
+                    visited[root.userRequest] = true;
+                }
+            }
+
+            function replaceImages(source, options) {
+
+                var manifest = require(options.manifest);
+                var urlRE = new RegExp('[\\w.\\/\\-]*(png|gif|jpg|jpeg|svg)', 'gi');
+                var urls = source.match(urlRE) || [];
+
+                urls.map(function(url){
+                    var fileRE = new RegExp(url);
+                    var prefix = options.prefix || '';
+                    source = source.replace(fileRE, path.join(prefix, manifest[url]));
+                    //console.log(source);
+                });
+                return source;
+            }
+
+
+            for (var i = 0; i < deps.length; i++) {
+                //console.log('depsi', deps[i].userRequest);
+                if (deps[i].userRequest) {
+                    console.log('deps.........', deps[i].module.userRequest);
+                    getNodes(deps[i].module);
+                }
+            }
+
+            console.log(visited);
+            //get paths for match
+            var foundPaths = [];
+            _.mapKeys(visited, function (value, key) {
+                if (re.test(key.toString())) {
+                    //console.log('scss', key);
+                    foundPaths.push(key);
+                }
+            });
+
+            for (var i = 0; i < foundPaths.length; i++) {
+                var result = sass.renderSync({
+                    file: foundPaths[i]
+                });
+                if (query.manifest && require.resolve(query.manifest)) {
+                    cssOutput.push(replaceImages(result.css.toString(), query));
+                } else {
+                    cssOutput.push(result.css.toString());
+                }
+
+            }
+            //
+            //this.mainStyle = cssOutput;
+            console.log(cssOutput);
+
+
+            fs.writeFile(path.join(__dirname, 'example', 'dist', 'css-' + fileName + '.json'), cssOutput.join(''), function (err) {
+                if (err) {
+                    return console.log(err);
+                }
+                console.log("The css was saved!");
+            });
+
+
+            fs.writeFile(path.join(__dirname, 'example', 'dist', 'stats-' + fileName + '.json'), data, function (err) {
+                if (err) {
+                    return console.log(err);
+                }
+                console.log("The file was saved!");
+            });
+            //callback(null, ['var style = '+JSON.stringify(this.mainStyle)+';', source].join("\n"));
+
+        });
     });
+
 
 };
 
