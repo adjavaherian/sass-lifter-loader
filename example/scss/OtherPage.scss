@@ -1,0 +1,18 @@
+@import "./base";
+@import "./mixin";
+
+.OtherPage {
+  p {
+    color: blue;
+  }
+  .front {
+    background: url('golden-gate-heights-2048.jpg');
+  }
+  .fb {
+    background: url('fb-logo-blue.png');
+  }
+}
+
+div {
+  @include hard-reset;
+}

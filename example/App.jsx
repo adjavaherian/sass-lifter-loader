@@ -3,6 +3,7 @@
 //var Route = Router.Route;
 //var NotFoundRoute = Router.NotFoundRoute;
 var FrontPage = require('lift-sass!./FrontPage');
+var OtherPage = require('lift-sass!./OtherPage');
 var fb = require('./images/fb-logo-blue.png');
 var hp = require('./images/golden-gate-heights-2048.jpg');
 

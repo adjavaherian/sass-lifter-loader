@@ -78,11 +78,13 @@ module.exports = function(source) {
     myWebpackConfig.plugins.push(
         new SassLifterPlugin(query)
     );
+    console.log('web.........', this._compilation);
 
-    webpack(myWebpackConfig, function (err, stats) {
-        if (err) throw err;
-        callback(null, ['var style = '+JSON.stringify(this.mainStyle)+';', source].join("\n"));
-    });
+    //webpack(myWebpackConfig, function (err, stats) {
+    //    console.log('web.........', stats.compilation._modules);
+    //    if (err) throw err;
+    //    callback(null, ['var style = '+JSON.stringify(this.mainStyle)+';', source].join("\n"));
+    //});
 
 };
 
