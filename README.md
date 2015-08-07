@@ -8,3 +8,5 @@ All that I want to do now is either return the value of the css output to the lo
 If you run the example, you'll see the string output in the console, but I need to get this string into the FrontPage.jsx module (where the dependencies start)
 
 Any help would be greatly appreciated.  Thanks.
+
+`npm install && npm start`

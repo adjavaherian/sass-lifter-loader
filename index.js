@@ -5,6 +5,9 @@ var loaderUtils = require("loader-utils");
 var SassLifterPlugin = require('./lift-sass-plugin');
 var ExtractTextPlugin = require("extract-text-webpack-plugin");
 var gutil = require('gulp-util');
+var _ = require('lodash');
+
+var cacheObj = {};
 
 var myWebpackConfig = {
     name: 'lift sass webpack',
@@ -57,7 +60,7 @@ var myWebpackConfig = {
             ]
     },
     bail: true,
-    cache: true,
+    cache: cacheObj,
     debug: true
 };
 
@@ -68,6 +71,7 @@ module.exports = function(source) {
     if(this.cacheable) this.cacheable();
 
     var callback = this.async();
+    var self = this;
 
     gutil.log('lift-sass loader applying to', this.resourcePath);
 
@@ -78,13 +82,11 @@ module.exports = function(source) {
     myWebpackConfig.plugins.push(
         new SassLifterPlugin(query)
     );
-    console.log('web.........', this._compilation);
-
-    //webpack(myWebpackConfig, function (err, stats) {
-    //    console.log('web.........', stats.compilation._modules);
-    //    if (err) throw err;
-    //    callback(null, ['var style = '+JSON.stringify(this.mainStyle)+';', source].join("\n"));
-    //});
+    webpack(myWebpackConfig, function (err, stats) {
+        //console.log('web.........', stats.compilation._modules);
+        if (err) throw err;
+        callback(null, ['var style = '+JSON.stringify(this.mainStyle)+';', source].join("\n"));
+    });
 
 };
 
