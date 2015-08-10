@@ -107,25 +107,25 @@ module.exports = function(source) {
             var cssOutput = [];
 
             function getNodes(root)  {
-                console.log('getNodes', root.userRequest);
+                //console.log('getNodes', root.userRequest);
                 if (root.dependencies.length > 0) {
-                    console.log('has deps');
+                    //console.log('has deps');
                     root.dependencies.forEach(function (child) {
-                        console.log('get child nodes');
+                        //console.log('get child nodes');
                         if ( child.module && child.module.userRequest && !visited[child.module.userRequest]) {
                             visited[child.module.userRequest] = true;
                             getNodes(child.module);
                         }
                     });
                 } else {
-                    console.log('no deps', root.userRequest);
+                    //console.log('no deps', root.userRequest);
                     visited[root.userRequest] = true;
                 }
             }
 
             function replaceImages(source, options) {
 
-                var manifest = require(options.manifest);
+                var manifest = require(path.join(options.outputDir, options.manifest));
                 var urlRE = new RegExp('[\\w.\\/\\-]*(png|gif|jpg|jpeg|svg)', 'gi');
                 var urls = source.match(urlRE) || [];
 
@@ -142,12 +142,11 @@ module.exports = function(source) {
             for (var i = 0; i < deps.length; i++) {
                 //console.log('depsi', deps[i].userRequest);
                 if (deps[i].userRequest) {
-                    console.log('deps.........', deps[i].module.userRequest);
+                    //console.log('deps.........', deps[i].module.userRequest);
                     getNodes(deps[i].module);
                 }
             }
 
-            console.log(visited);
             //get paths for match
             var foundPaths = [];
             _.mapKeys(visited, function (value, key) {
@@ -157,35 +156,33 @@ module.exports = function(source) {
                 }
             });
 
-            for (var i = 0; i < foundPaths.length; i++) {
+            for (var j = 0; j < foundPaths.length; j++) {
                 var result = sass.renderSync({
-                    file: foundPaths[i]
+                    file: foundPaths[j]
                 });
-                if (query.manifest && require.resolve(query.manifest)) {
+                var manifest = path.join(query.outputDir, query.manifest);
+                //console.log('using manifest', manifest);
+                if (query.manifest && require.resolve(manifest)) {
                     cssOutput.push(replaceImages(result.css.toString(), query));
                 } else {
                     cssOutput.push(result.css.toString());
                 }
 
             }
-            //
-            //this.mainStyle = cssOutput;
-            console.log(cssOutput);
 
-
-            fs.writeFile(path.join(__dirname, 'example', 'dist', 'css-' + fileName + '.json'), cssOutput.join(''), function (err) {
+            fs.writeFile(path.join(query.outputDir, fileName + '.css'), cssOutput.join(''), function (err) {
                 if (err) {
                     return console.log(err);
                 }
-                console.log("The css was saved!");
+                console.log(path.join(query.outputDir, fileName + '.css'), " was saved.");
             });
 
 
-            fs.writeFile(path.join(__dirname, 'example', 'dist', 'stats-' + fileName + '.json'), data, function (err) {
+            fs.writeFile(path.join(query.outputDir, fileName + '.stats.json'), data, function (err) {
                 if (err) {
                     return console.log(err);
                 }
-                console.log("The file was saved!");
+                console.log(path.join(query.outputDir, fileName + '.stats.json'), " was saved.");
             });
             callback(null, ['var style = '+JSON.stringify(cssOutput)+';', source].join("\n"));
 
