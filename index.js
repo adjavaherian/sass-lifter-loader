@@ -6,7 +6,6 @@ var SassLifterPlugin = require('./lift-sass-plugin');
 var ExtractTextPlugin = require("extract-text-webpack-plugin");
 var gutil = require('gulp-util');
 var _ = require('lodash');
-var find = require("search-requires");
 var sass = require('node-sass');
 
 var myWebpackConfig = {
