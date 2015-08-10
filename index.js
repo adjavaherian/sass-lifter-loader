@@ -188,7 +188,7 @@ module.exports = function(source) {
                 }
                 console.log("The file was saved!");
             });
-            //callback(null, ['var style = '+JSON.stringify(this.mainStyle)+';', source].join("\n"));
+            callback(null, ['var style = '+JSON.stringify(cssOutput)+';', source].join("\n"));
 
         });
     });
