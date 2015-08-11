@@ -1,0 +1,12 @@
+@import "./base";
+@import "./mixin";
+
+.YetAnother {
+  p {
+    color: blue;
+  }
+}
+
+div {
+  @include hard-reset;
+}

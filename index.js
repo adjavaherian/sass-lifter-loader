@@ -71,6 +71,7 @@ module.exports = function(moduleSource) {
     var testString = query.testString || 'scss';
     var re = new RegExp('' + testString + '', 'g');
     var callback = this.async();
+    var self = this;
     var fileName = this.resourcePath.split('/').splice(-1)[0];
     var manifest = path.join(query.outputDir, query.manifest);
 
@@ -137,7 +138,6 @@ module.exports = function(moduleSource) {
                 cb(source);
             }
 
-
             for (var i = 0; i < deps.length; i++) {
                 //console.log('depsi', deps[i].userRequest);
                 if (deps[i].userRequest) {
@@ -156,11 +156,14 @@ module.exports = function(moduleSource) {
             });
 
             for (var j = 0; j < foundPaths.length; j++) {
+
+                self.addDependency(foundPaths[j]);
+
                 var result = sass.renderSync({
                     file: foundPaths[j]
                 });
 
-                if (query.manifest && require.resolve(manifest)) {
+                if (query.manifest) {
                     //console.log('replacing images', manifest);
                     replaceImages(result.css.toString(), query, function(str){
                         //console.log(str);
@@ -172,11 +175,39 @@ module.exports = function(moduleSource) {
                 }
             }
 
-            fs.writeFile(path.join(query.outputDir, fileName + '.css'), cssOutput.join(''), function (err) {
+            //create outputs
+            var outputFileName = path.join(query.outputDir, fileName + '.css');
+            var outputManifestFile = path.join(query.outputDir, 'sass-loader-manifest.json');
+
+            //create current manifest
+            var outputManifest = {};
+            outputManifest[fileName.split('.')[0]] = fileName + '.css';
+
+            //join with previous manifest
+            try {
+                var readManifest = fs.readFileSync(outputManifestFile, 'utf8');
+                outputManifest = _.extend(outputManifest, JSON.parse(readManifest));
+                //console.log('output manifest joined', outputManifest);
+                try {
+                    fs.writeFileSync(outputManifestFile, JSON.stringify(outputManifest), 'utf8');
+                } catch (err) {
+                    console.log('error appending manifest', err);
+                }
+            } catch (err) {
+                console.log('manifest not found, creating manifest...');
+                try {
+                    fs.writeFileSync(outputManifestFile, JSON.stringify(outputManifest), 'utf8');
+                } catch(err) {
+                    console.log('could not create manifest', err);
+                }
+            }
+
+            //write css
+            fs.writeFile(outputFileName, cssOutput.join(''), function (err) {
                 if (err) {
                     return console.log(err);
                 }
-                console.log(path.join(query.outputDir, fileName + '.css'), " was saved.");
+                console.log(outputFileName, " was saved.");
             });
 
             //fs.writeFile(path.join(query.outputDir, fileName + '.stats.json'), data, function (err) {

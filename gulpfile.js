@@ -16,8 +16,10 @@ gulp.task('default', function(callback) {
 });
 
 gulp.task('clean', function(callback) {
-    del('example/dist/*');
-    callback();
+    del('example/dist/**/*', function(){
+        callback();
+    });
+
 });
 
 gulp.task('images', function() {
