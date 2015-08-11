@@ -3,7 +3,6 @@ var webpack = require('webpack');
 var path = require('path');
 var fs = require('fs');
 var ProgressPlugin = require('./progress-plugin');
-var myCache = {};
 
 module.exports = {
     name: 'server side webpack',
@@ -32,18 +31,14 @@ module.exports = {
         }
     },
     plugins: [
-        //new ProgressPlugin()
+        new ProgressPlugin()
     ],
     module: {
         loaders: [
         {
             test: /\.scss$/,
             loaders: [
-                'raw',
-                //'style',
-                //'css',
-                //'logger-loader',
-                'sass'
+                'noop-loader'
             ]
         }
         , {
@@ -58,7 +53,7 @@ module.exports = {
         }]
     },
     bail: true,
-    cache: myCache,
+    cache: true,
     watch: false,
     debug: true
 };

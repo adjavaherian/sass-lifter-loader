@@ -1,7 +1,7 @@
 {
   "name": "sass-lifter-loader",
   "version": "1.0.0",
-  "description": "webpack loader for lifting sass as css into entry",
+  "description": "webpack loader for lifting sass as css into output files",
   "main": "index.js",
   "scripts": {
     "test": "webpack"
@@ -18,29 +18,26 @@
     "file-loader": "^0.8.4",
     "gulp": "^3.9.0",
     "gulp-debug": "^2.0.1",
-    "gulp-imagemin": "^2.3.0",
     "gulp-rev": "^5.1.0",
-    "image-webpack-loader": "^1.6.1",
     "json-loader": "^0.5.2",
     "loader-utils": "^0.2.11",
     "lodash": "^3.10.0",
     "mime": "^1.3.4",
     "node-sass": "^3.2.0",
     "null-loader": "^0.1.1",
-    "promise": "^7.0.3",
     "raw-loader": "^0.5.1",
     "react": "^0.13.3",
     "react-router": "^0.13.3",
     "run-sequence": "^1.1.2",
     "sass-loader": "^1.0.3",
-    "scan-dependencies": "^1.0.0",
     "webpack": "^1.10.5",
     "webpack-stream": "^2.1.0"
   },
   "devDependencies": {
     "css-loader": "^0.15.6",
     "gulp-util": "^3.0.6",
-    "style-loader": "^0.12.3"
+    "style-loader": "^0.12.3",
+    "image-webpack-loader": "^1.6.1"
   },
   "repository": {
     "type": "git",

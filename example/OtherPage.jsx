@@ -1,4 +1,4 @@
-//var React = require('react');
+var React = require('react');
 var StyleSheet = require('./scss/OtherPage');
 var HeroSection = require('./Hero');
 

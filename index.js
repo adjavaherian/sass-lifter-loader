@@ -1,8 +1,11 @@
+//index.js
+//sass-lifter-loader
+//lift sass from dependencies and write css to fs
+
 var webpack = require('webpack');
 var path = require('path');
 var fs = require('fs');
 var loaderUtils = require("loader-utils");
-var SassLifterPlugin = require('./lift-sass-plugin');
 var ExtractTextPlugin = require("extract-text-webpack-plugin");
 var gutil = require('gulp-util');
 var _ = require('lodash');
@@ -27,7 +30,6 @@ var myWebpackConfig = {
         root: __dirname,
         alias: {
             'lift-sass': path.join(__dirname),
-            //'logger-loader': path.join(__dirname, 'logger-loader'),
             'passthru-loader': path.join(__dirname, 'passthru-loader')
         }
     },
@@ -37,8 +39,6 @@ var myWebpackConfig = {
                     test: /\.scss$/,
                     loaders: [
                         'raw',
-                        //'css',
-                        //'logger-loader',
                         'sass'
                     ]
                 }
@@ -63,7 +63,7 @@ var myWebpackConfig = {
     debug: true
 };
 
-module.exports = function(source) {
+module.exports = function(moduleSource) {
 
     if(this.cacheable) this.cacheable();
 
@@ -71,8 +71,8 @@ module.exports = function(source) {
     var testString = query.testString || 'scss';
     var re = new RegExp('' + testString + '', 'g');
     var callback = this.async();
-    var self = this;
     var fileName = this.resourcePath.split('/').splice(-1)[0];
+    var manifest = path.join(query.outputDir, query.manifest);
 
     gutil.log('lift-sass loader applying to', fileName);
 
@@ -98,7 +98,6 @@ module.exports = function(source) {
         });
         cache = null;
 
-
         stats.compilation.entries.map(function(entry) {
 
             var deps = entry.dependencies;
@@ -123,7 +122,7 @@ module.exports = function(source) {
                 }
             }
 
-            function replaceImages(source, options) {
+            function replaceImages(source, options, cb) {
 
                 var manifest = require(path.join(options.outputDir, options.manifest));
                 var urlRE = new RegExp('[\\w.\\/\\-]*(png|gif|jpg|jpeg|svg)', 'gi');
@@ -135,7 +134,7 @@ module.exports = function(source) {
                     source = source.replace(fileRE, path.join(prefix, manifest[url]));
                     //console.log(source);
                 });
-                return source;
+                cb(source);
             }
 
 
@@ -160,14 +159,17 @@ module.exports = function(source) {
                 var result = sass.renderSync({
                     file: foundPaths[j]
                 });
-                var manifest = path.join(query.outputDir, query.manifest);
-                //console.log('using manifest', manifest);
+
                 if (query.manifest && require.resolve(manifest)) {
-                    cssOutput.push(replaceImages(result.css.toString(), query));
+                    //console.log('replacing images', manifest);
+                    replaceImages(result.css.toString(), query, function(str){
+                        //console.log(str);
+                        cssOutput.push(str);
+                    });
+
                 } else {
                     cssOutput.push(result.css.toString());
                 }
-
             }
 
             fs.writeFile(path.join(query.outputDir, fileName + '.css'), cssOutput.join(''), function (err) {
@@ -177,14 +179,14 @@ module.exports = function(source) {
                 console.log(path.join(query.outputDir, fileName + '.css'), " was saved.");
             });
 
+            //fs.writeFile(path.join(query.outputDir, fileName + '.stats.json'), data, function (err) {
+            //    if (err) {
+            //        return console.log(err);
+            //    }
+            //    console.log(path.join(query.outputDir, fileName + '.stats.json'), " was saved.");
+            //});
 
-            fs.writeFile(path.join(query.outputDir, fileName + '.stats.json'), data, function (err) {
-                if (err) {
-                    return console.log(err);
-                }
-                console.log(path.join(query.outputDir, fileName + '.stats.json'), " was saved.");
-            });
-            callback(null, ['var style = '+JSON.stringify(cssOutput)+';', source].join("\n"));
+            callback(null, moduleSource);
 
         });
     });

@@ -9,10 +9,9 @@ var webpack = require('webpack');
 function ProgressPlugin(opts) {
 
     return new webpack.ProgressPlugin(function(progress, message) {
-        var now = new Date().getTime();
         process.stdout.write('progress ' + Math.floor(progress * 100) + '% ' + message + '\r');
     });
 
-};
+}
 
 module.exports = ProgressPlugin;
