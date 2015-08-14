@@ -29,7 +29,7 @@
     "react": "^0.13.3",
     "react-router": "^0.13.3",
     "run-sequence": "^1.1.2",
-    "sass-loader": "^1.0.3",
+    "sass-loader": "^2.0.1",
     "webpack": "^1.10.5",
     "webpack-stream": "^2.1.0"
   },

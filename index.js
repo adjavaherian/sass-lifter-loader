@@ -1,7 +1,7 @@
 //index.js
 //sass-lifter-loader
 //lift sass from dependencies and write css to fs
-
+process.env.UV_THREADPOOL_SIZE = 64;
 var webpack = require('webpack');
 var path = require('path');
 var fs = require('fs');
@@ -10,6 +10,8 @@ var ExtractTextPlugin = require("extract-text-webpack-plugin");
 var gutil = require('gulp-util');
 var _ = require('lodash');
 var sass = require('node-sass');
+var CachePlugin = require("webpack/lib/CachePlugin");
+var myCache = {};
 
 var myWebpackConfig = {
     name: 'lift sass webpack',
@@ -25,11 +27,13 @@ var myWebpackConfig = {
         modulesDirectories: ['node_modules'],
         extensions: ['', '.json', '.js', '.jsx', '.scss', '.png', '.jpg', '.jpeg', '.gif']
     },
-    plugins: [],
+    plugins: [
+        new CachePlugin(myCache)
+    ],
     resolveLoader: {
         root: __dirname,
         alias: {
-            'lift-sass': path.join(__dirname),
+            'lift-sass': 'passthru-loader',
             'passthru-loader': path.join(__dirname, 'passthru-loader')
         }
     },
@@ -132,8 +136,9 @@ module.exports = function(moduleSource) {
                 urls.map(function(url){
                     var fileRE = new RegExp(url);
                     var prefix = options.prefix || '';
-                    source = source.replace(fileRE, path.join(prefix, manifest[url]));
-                    //console.log(source);
+                    if (manifest[url]) {
+                        source = source.replace(fileRE, path.join(prefix, manifest[url]));
+                    }
                 });
                 cb(source);
             }

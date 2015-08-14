@@ -3,6 +3,8 @@ var webpack = require('webpack');
 var path = require('path');
 var fs = require('fs');
 var ProgressPlugin = require('./progress-plugin');
+var CachePlugin = require("webpack/lib/CachePlugin");
+var myCache = {};
 
 module.exports = {
     name: 'server side webpack',
@@ -27,10 +29,12 @@ module.exports = {
             'lift-sass': path.join(__dirname) + '?testString=scss&prefix=images&manifest=rev-manifest&outputDir=' + path.join(__dirname, 'example', 'dist'),
             'logger-loader': path.join(__dirname, 'logger-loader'),
             'noop-loader': path.join(__dirname, 'noop-loader'),
-            'passthru-loader': path.join(__dirname, 'passthru-loader')
+            'passthru-loader': path.join(__dirname, 'passthru-loader'),
+            'manifest-loader': path.join(__dirname, 'manifest-loader') + '?prefix=example/images&manifest=rev-manifest&outputDir=' + path.join(__dirname, 'example', 'dist')
         }
     },
     plugins: [
+        new CachePlugin(myCache),
         new ProgressPlugin()
     ],
     module: {
@@ -44,7 +48,7 @@ module.exports = {
         , {
             test: /\.(jpe?g|png|gif|svg)$/i,
             loaders: [
-                'passthru-loader'
+                'manifest-loader'
             ]
         }
         , {
@@ -57,3 +61,5 @@ module.exports = {
     watch: false,
     debug: true
 };
+
+
