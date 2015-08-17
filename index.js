@@ -41,8 +41,7 @@ var myWebpackConfig = {
                 {
                     test: /\.scss$/,
                     loaders: [
-                        'raw',
-                        'sass'
+                        'noop-loader'
                     ]
                 }
                 , {
