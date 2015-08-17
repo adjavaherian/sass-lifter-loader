@@ -4,6 +4,7 @@
   "description": "webpack loader for lifting sass as css into output files",
   "main": "index.js",
   "scripts": {
+    "start": "gulp",
     "test": "webpack"
   },
   "directories": {

@@ -1,5 +1,5 @@
 @import "./base";
-@import "./mixin";
+//@import "./mixin";
 
 .FrontPage {
   p {
@@ -14,5 +14,5 @@
 }
 
 div {
-  @include hard-reset;
+  //@include hard-reset;
 }
