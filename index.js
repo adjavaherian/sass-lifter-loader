@@ -1,7 +1,6 @@
 //index.js
 //sass-lifter-loader
 //lift sass from dependencies and write css to fs
-process.env.UV_THREADPOOL_SIZE = 64;
 var webpack = require('webpack');
 var path = require('path');
 var fs = require('fs');
@@ -88,20 +87,6 @@ module.exports = function(moduleSource) {
     webpack(myWebpackConfig, function (err, stats) {
 
         if (err) throw err;
-
-        var cache = [];
-        var data = JSON.stringify(stats, function(key, value) {
-            if (typeof value === 'object' && value !== null) {
-                if (cache.indexOf(value) !== -1) {
-                    // Circular reference found, discard key
-                    return;
-                }
-                // Store value in our collection
-                cache.push(value);
-            }
-            return value;
-        });
-        cache = null;
 
         stats.compilation.entries.map(function(entry) {
 
@@ -215,24 +200,10 @@ module.exports = function(moduleSource) {
                 console.log(outputFileName, " was saved.");
             });
 
-            //fs.writeFile(path.join(query.outputDir, fileName + '.stats.json'), data, function (err) {
-            //    if (err) {
-            //        return console.log(err);
-            //    }
-            //    console.log(path.join(query.outputDir, fileName + '.stats.json'), " was saved.");
-            //});
 
             callback(null, moduleSource);
 
         });
     });
 
-
 };
-
-//module.exports.pitch = function(remainingRequest) {
-//    console.log('remaining', remainingRequest);
-//    return [
-//        'module.exports = "";'
-//    ].join("\n");
-//};
