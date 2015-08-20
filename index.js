@@ -180,14 +180,14 @@ module.exports = function(moduleSource) {
                 try {
                     fs.writeFileSync(outputManifestFile, JSON.stringify(outputManifest), 'utf8');
                 } catch (err) {
-                    console.log('error appending manifest', err);
+                    gutil.log('error appending manifest', err);
                 }
             } catch (err) {
-                console.log('manifest not found, creating manifest...');
+                gutil.log('sass-lifter: manifest not found, creating manifest...');
                 try {
                     fs.writeFileSync(outputManifestFile, JSON.stringify(outputManifest), 'utf8');
                 } catch(err) {
-                    console.log('could not create manifest', err);
+                    gutil.log('sass-lifter: could not create manifest', err);
                 }
             }
 
@@ -196,7 +196,7 @@ module.exports = function(moduleSource) {
                 if (err) {
                     return console.log(err);
                 }
-                console.log(outputFileName, " was saved.");
+                gutil.log('sass-lifter: ', outputFileName, " was saved.");
             });
 
 
