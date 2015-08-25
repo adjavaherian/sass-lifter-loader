@@ -77,7 +77,7 @@ module.exports = function(moduleSource) {
     var fileName = this.resourcePath.split('/').splice(-1)[0];
     var manifest = path.join(query.outputDir, query.manifest);
 
-    gutil.log('lift-sass loader applying to', fileName);
+    gutil.log('sass-lifter: lifting', gutil.colors.blue(fileName));
 
     myWebpackConfig.entry = {
         'lift-sass-loader-entry': this.resourcePath
@@ -165,6 +165,7 @@ module.exports = function(moduleSource) {
             }
 
             //create outputs
+            var outputFileNameBasic = fileName +'.css';
             var outputFileName = path.join(query.outputDir, fileName + '.css');
             var outputManifestFile = path.join(query.outputDir, 'sass-loader-manifest.json');
 
@@ -180,14 +181,14 @@ module.exports = function(moduleSource) {
                 try {
                     fs.writeFileSync(outputManifestFile, JSON.stringify(outputManifest), 'utf8');
                 } catch (err) {
-                    gutil.log('error appending manifest', err);
+                    gutil.log('sass-lifter:', gutil.colors.red('error appending manifest'), err);
                 }
             } catch (err) {
-                gutil.log('sass-lifter: manifest not found, creating manifest...');
+                gutil.log('sass-lifter:', gutil.colors.blue('manifest not found, creating manifest...'));
                 try {
                     fs.writeFileSync(outputManifestFile, JSON.stringify(outputManifest), 'utf8');
                 } catch(err) {
-                    gutil.log('sass-lifter: could not create manifest', err);
+                    gutil.log('sass-lifter:', gutil.colors.red('could not create manifest'), err);
                 }
             }
 
@@ -196,7 +197,7 @@ module.exports = function(moduleSource) {
                 if (err) {
                     return console.log(err);
                 }
-                gutil.log('sass-lifter: ', outputFileName, " was saved.");
+                gutil.log('sass-lifter:', gutil.colors.green(outputFileName), 'was saved');
             });
 
 
