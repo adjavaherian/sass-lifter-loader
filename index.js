@@ -62,7 +62,8 @@ var myWebpackConfig = {
     },
     bail: true,
     cache: true,
-    debug: true
+    debug: true,
+    externals: [{ 'react/addons' : true, 'newrelic' : true }]
 };
 
 module.exports = function(moduleSource) {
