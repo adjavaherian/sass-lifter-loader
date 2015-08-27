@@ -12,6 +12,16 @@ var sass = require('node-sass');
 var CachePlugin = require("webpack/lib/CachePlugin");
 var myCache = {};
 
+//require common.js for node_modules (better for server)
+var node_modules = fs.readdirSync('node_modules').filter(function(x) { return x !== '.bin' });
+function node_externals(context, request, cb) {
+    if(node_modules.indexOf(request) !== -1) {
+        cb(null, 'commonjs ' + request);
+        return;
+    }
+    cb();
+}
+
 var myWebpackConfig = {
     name: 'lift sass webpack',
     target: 'node',
@@ -63,7 +73,7 @@ var myWebpackConfig = {
     bail: true,
     cache: true,
     debug: true,
-    externals: [{ 'react/addons' : true, 'newrelic' : true }]
+    externals: [{ 'react/addons' : true, 'newrelic' : true }, node_externals]
 };
 
 module.exports = function(moduleSource) {
