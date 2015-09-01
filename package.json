@@ -24,7 +24,6 @@
     "json-loader": "^0.5.2",
     "loader-utils": "^0.2.11",
     "lodash": "^3.10.0",
-    "manifest-loader": "git+https://github.com/adjavaherian/manifest-loader.git",
     "mime": "^1.3.4",
     "node-sass": "^3.2.0",
     "null-loader": "^0.1.1",
