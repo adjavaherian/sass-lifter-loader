@@ -1,11 +1,24 @@
 # webpack-sass-lifter-loader
 A Webpack loader and plugin that recursively lifts sass dependencies into the entry point. 
 
-Work in progress, not complete yet, but I'm able to log out the result of the plugin.  
+Pretty much done, but needs testing and perhaps performance tweaking.  
 
-All that I want to do now is either return the value of the css output to the loader, so it can be exported as a string, or pitched to the raw loader.
+`npm i sass-lifter-loader --save-dev`
 
-If you run the example, you'll see the string output in the console, but I need to get this string into the FrontPage.jsx module (where the dependencies start)
+I add it to webpack like this
+
+```javascript
+    resolveLoader: {
+        root: __dirname,
+        alias: {
+            'lift-sass': path.join(__dirname) + '?outputStyle=compressed&testString=scss&prefix=images&manifest=rev-manifest&outputDir=' + path.join(__dirname, 'example', 'dist')
+        }
+    },
+```
+
+Where `lift-sass` is the alias and the params are query style (all params listed above)
+
+Not really sure off the top of my head what happens without params (should work, but needs tests)
 
 Any help would be greatly appreciated.  Thanks.
 
