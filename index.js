@@ -10,6 +10,7 @@ var gutil = require('gulp-util');
 var _ = require('lodash');
 var sass = require('node-sass');
 var CachePlugin = require("webpack/lib/CachePlugin");
+var crypto = require('crypto');
 var myCache = {};
 
 //require common.js for node_modules (better for server)
@@ -87,6 +88,7 @@ module.exports = function(moduleSource) {
     var self = this;
     var fileName = this.resourcePath.split('/').splice(-1)[0];
     var manifest = path.join(query.outputDir, query.manifest);
+    var outputStyle = query.outputStyle || 'nested';
 
     gutil.log('sass-lifter: lifting', gutil.colors.blue(fileName));
 
@@ -160,7 +162,8 @@ module.exports = function(moduleSource) {
                 self.addDependency(foundPaths[j]);
 
                 var result = sass.renderSync({
-                    file: foundPaths[j]
+                    file: foundPaths[j],
+                    outputStyle: outputStyle
                 });
 
                 if (query.manifest) {
@@ -176,13 +179,15 @@ module.exports = function(moduleSource) {
             }
 
             //create outputs
-            var outputFileNameBasic = fileName +'.css';
-            var outputFileName = path.join(query.outputDir, fileName + '.css');
+            var fileOut = cssOutput.join('');
+            var hash = crypto.createHash('md5').update(fileOut).digest('hex').substr(0, 8);
+            var outputFileNameBasic = fileName.split('.')[0] +'-' + hash + '.css';
+            var outputFileName = path.join(query.outputDir, outputFileNameBasic);
             var outputManifestFile = path.join(query.outputDir, 'sass-loader-manifest.json');
 
             //create current manifest
             var outputManifest = {};
-            outputManifest[fileName.split('.')[0]] = fileName + '.css';
+            outputManifest[fileName.split('.')[0]] = outputFileNameBasic;
 
             //join with previous manifest
             try {
@@ -204,11 +209,11 @@ module.exports = function(moduleSource) {
             }
 
             //write css
-            fs.writeFile(outputFileName, cssOutput.join(''), function (err) {
+            fs.writeFile(outputFileName, fileOut, function (err) {
                 if (err) {
                     return console.log(err);
                 }
-                gutil.log('sass-lifter:', gutil.colors.green(outputFileName), 'was saved');
+                gutil.log('sass-lifter:', gutil.colors.green(outputFileNameBasic), 'was saved');
             });
 
 

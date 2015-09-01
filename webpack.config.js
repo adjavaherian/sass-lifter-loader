@@ -15,7 +15,8 @@ module.exports = {
     output: {
         libraryTarget: 'commonjs2',
         path: path.join(__dirname, 'example', 'dist'),
-        filename: 'webpack.output.js'
+        filename: 'webpack.output.js',
+        publicPath: 'images/'
     },
     resolve: {
         root: __dirname,
@@ -26,11 +27,11 @@ module.exports = {
     resolveLoader: {
         root: __dirname,
         alias: {
-            'lift-sass': path.join(__dirname) + '?testString=scss&prefix=images&manifest=rev-manifest&outputDir=' + path.join(__dirname, 'example', 'dist'),
+            'lift-sass': path.join(__dirname) + '?outputStyle=compressed&testString=scss&prefix=images&manifest=rev-manifest&outputDir=' + path.join(__dirname, 'example', 'dist'),
             'logger-loader': path.join(__dirname, 'logger-loader'),
             'noop-loader': path.join(__dirname, 'noop-loader'),
             'passthru-loader': path.join(__dirname, 'passthru-loader'),
-            'manifest-loader': path.join(__dirname, 'manifest-loader') + '?prefix=example/images&manifest=rev-manifest&outputDir=' + path.join(__dirname, 'example', 'dist')
+            'manifest-loader': path.join(__dirname, 'manifest-loader') + '?limit=10000&hash=sha512&digest=hex&relativeSplit=images/&prefix=example/images&manifest=rev-manifest&outputDir=' + path.join(__dirname, 'example', 'dist')
         }
     },
     plugins: [
