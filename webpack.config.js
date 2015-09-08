@@ -54,7 +54,10 @@ module.exports = {
         }
         , {
             test: /\.jsx$/,
-            loaders: ['babel']
+            loader: 'babel',
+            query: {
+                optional: ['es7.classProperties']
+            }
         }]
     },
     bail: true,
