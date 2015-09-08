@@ -67,7 +67,7 @@ var myWebpackConfig = {
                 }
                 , {
                     test: /\.jsx$/,
-                    loaders: ['babel']
+                    loaders: ['babel?optional[]=es7.classProperties']
                 }
             ]
     },
