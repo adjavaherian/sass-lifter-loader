@@ -67,7 +67,10 @@ var myWebpackConfig = {
                 }
                 , {
                     test: /\.jsx$/,
-                    loaders: ['babel?optional[]=es7.classProperties']
+                    loader: 'babel',
+                    query: {
+                        optional: ['es7.classProperties']
+                    }
                 }
             ]
     },
